@@ -1,0 +1,25 @@
+# WebStorm
+.idea
+
+# VSCode
+.code
+
+# Env
+.env
+
+# Project docs
+docs
+
+# Distribution
+dist
+
+# Node
+node_modules
+
+# Yarn
+yarn.lock
+yarn-error.log
+
+# pa11y
+/pa11y-dashboard/
+/pa11y-webservice/

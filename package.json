@@ -1,0 +1,39 @@
+{
+  "name": "wcasg-audit",
+  "version": "0.0.1",
+  "author": "Gabe Wyatt <gabe@solarixdigital.com>",
+  "repository": "git@gitlab.solarixdigital.com:solarix/wcasg/audit.git",
+  "description": "Node.js service to handle WCASG audit requests / responses.",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "dashboard:start": "cd pa11y-dashboard && yarn run start",
+    "db:ssh-tunnel": "ssh -L 4321:localhost:27017 root@167.172.199.242 -f -N",
+    "start": "node dist/index.js",
+    "watch": "rollup -c -w",
+    "webservice:start": "cd pa11y-webservice && yarn run start"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-typescript": "^7.8.3",
+    "@rollup/plugin-alias": "^3.0.1",
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-typescript": "^3.0.0",
+    "lodash": "^4.17.15",
+    "rollup": "^1.31.1",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.26.0",
+    "typescript": "^3.8.2"
+  },
+  "dependencies": {
+    "pa11y-webservice-client-node": "^2.0.0"
+  }
+}

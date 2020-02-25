@@ -1,0 +1,5 @@
+module.exports = {
+  sourceMaps: true,
+  presets: ["@babel/preset-env", "@babel/preset-typescript"],
+  plugins: ["@babel/plugin-proposal-object-rest-spread"]
+};
