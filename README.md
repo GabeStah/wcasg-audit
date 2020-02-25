@@ -5,6 +5,9 @@
 2.  Our software requests a scan from the API, API delivers us a report.
 3.  We display the report (Client may choose to email report, so we just need to save the response to pull from various endpoints). 
 
+1. Dashboard: Audit request made by `User` or `Admin`.
+1. `dashboard.mysql.audits` 
+
 ### API (Pa11y)
 
 - Well-maintained and open source.
@@ -52,9 +55,10 @@
 - [x] Setup Node server.
 - [x] Install [pa11y WebService](https://github.com/pa11y/pa11y-webservice)
 - [x] Install [pa11y dashboard](https://github.com/pa11y/pa11y-dashboard)
-- [ ] Install headless Chrome to webserver
-- [ ] Add ability to request a scan by domain name
+- [x] Install headless Chrome to webserver
+- [x] Add ability to request a scan by domain name
 - [ ] Show results on a web page (unstyled or ugly is fine)
+  - [x] JSON output presently.
 - [ ] Allow API to be posted against from any sort of Hubspot or webpage html form.
   - [ ] While this doesn't need to focus on security, privacy is a good metric to uphold here. Public URL results should probably expire unless connected to a user id in the dashboard, never expire in the DB so that eventually the admin can search historical results.
   - [ ] Add throttling mechanism.

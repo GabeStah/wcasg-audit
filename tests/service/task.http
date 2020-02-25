@@ -11,3 +11,6 @@ Content-Type: application/json
 POST http://167.172.207.18:3000/tasks/5e552f6a598b3307f9522472/run
 
 ###
+GET http://167.172.207.18:3000/tasks/5e552f6a598b3307f9522472/results?full=true
+
+###
