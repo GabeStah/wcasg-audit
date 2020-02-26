@@ -15,7 +15,6 @@ dist
 
 # Node
 node_modules/
-pa11y-webservice/node_modules/
 
 # Yarn
 yarn.lock
