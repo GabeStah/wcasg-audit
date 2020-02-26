@@ -1,0 +1,3 @@
+[submodule "pa11y-webservice-laravel"]
+	path = pa11y-webservice-laravel
+	url = http://gitlab.solarixdigital.com/solarix/wcasg/pa11y-webservice-laravel.git
