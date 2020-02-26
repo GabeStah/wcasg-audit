@@ -14,12 +14,8 @@ docs
 dist
 
 # Node
-node_modules
+node_modules/
 
 # Yarn
 yarn.lock
 yarn-error.log
-
-# pa11y
-/pa11y-dashboard/
-/pa11y-webservice/
