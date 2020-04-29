@@ -11,11 +11,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "dashboard:start": "cd pa11y-dashboard && yarn run start",
     "db:ssh-tunnel": "ssh -L 4321:localhost:27017 root@167.172.199.242 -f -N",
     "start": "node dist/index.js",
     "watch": "rollup -c -w",
-    "webservice:start": "cd pa11y-webservice && yarn run start"
+    "webservice:start": "cd pa11y-webservice-laravel && yarn run start"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
