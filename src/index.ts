@@ -1,7 +1,7 @@
 import createClient from 'pa11y-webservice-client-node';
 
 // Create client with the base URL of the web-service
-const client = createClient('http://167.172.207.18:3000/');
+const client = createClient('https://audit.widget.wcasg.solarix.dev:3000/');
 
 // Create a task
 client.tasks.create({
