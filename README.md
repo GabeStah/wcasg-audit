@@ -127,8 +127,8 @@ To directly connect:
 1. Open AWS console and adjust `srn:vpc:wcasg:widget:connector::sg/instance` security group.
 2. Add an `inbound rule` allowing `TCP 27017` from your private IP address.
 3. Now connect to server's mongodb port: 
-  - Testing: `mongodb://connector.widget.wcasg.solarix.dev:27017/pa11y-webservice-testing`
-  - Production: `mongodb://connector.widget.wcasg.solarix.host:27017/pa11y-webservice-production`
+  - Testing: `mongodb://audit.widget.wcasg.solarix.dev:27017/pa11y-webservice-testing`
+  - Production: `mongodb://audit.widget.wcasg.solarix.host:27017/pa11y-webservice-production`
 
 To connect via SSH tunnel:
 
