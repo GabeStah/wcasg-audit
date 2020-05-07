@@ -11,7 +11,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "db:ssh-tunnel": "ssh -L 4321:localhost:27017 root@167.172.199.242 -f -N",
+    "db:ssh-tunnel:testing": "ssh -L 4321:localhost:27017 ubuntu@audit.widget.wcasg.solarix.dev -f -N -i C:\\Users\\Gabe\\.ssh\\aws\\solarix__pem_dev.pem",
+    "db:ssh-tunnel:production": "ssh -L 4321:localhost:27017 ubuntu@audit.widget.wcasg.solarix.host -f -N -i C:\\Users\\Gabe\\.ssh\\aws\\solarix__pem_dev.pem",
     "start": "node dist/index.js",
     "watch": "rollup -c -w",
     "pa11y:start": "cd pa11y-webservice-laravel && yarn run start",

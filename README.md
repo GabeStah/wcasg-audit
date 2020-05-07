@@ -1,68 +1,147 @@
 
-## Description / Pipeline
+Audit is a backend service that performs accessibility audits for requested URLs.  Audit is essentially just a slightly-modified fork of the [pa11y WebService](https://github.com/pa11y/pa11y-webservice) app with a local MongoDB instance to store requests and results.
 
-1.  User enters domain name into input field (On marketing website or Dashboard)
-2.  Our software requests a scan from the API, API delivers us a report.
-3.  We display the report (Client may choose to email report, so we just need to save the response to pull from various endpoints). 
+## Usage
 
-1. Dashboard: Audit request made by `User` or `Admin`.
-1. `dashboard.mysql.audits` 
+### Creating a Task
 
-### API (Pa11y)
+An new audit task can be created by sending a `POST` request to the `/tasks` endpoint with the appropriate attributes:
 
-- Well-maintained and open source.
-- Supports both WCAG2A+ and Section508 standards.
-- Audits can be performed either via command line or via a Node JS app.
-- Support multiple [runners](https://github.com/pa11y/pa11y#runners) to execute and return different types of results.
-- [Node-based Dashboard](https://github.com/pa11y/pa11y-dashboard)
-- [CI tool](https://github.com/pa11y/pa11y-ci)
-- [Node-based webservice app](https://github.com/pa11y/pa11y-webservice)
+```
+$ curl --location --request POST 'https://audit.widget.wcasg.solarix.dev/tasks' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "audit-12345",
+    "url": "example.com",
+    "standard": "WCAG2AA"
+}'
+```
 
-### Storage
+This generates an new `task` document in MongoDB:
 
-- MongoDB as primary db.
-- Redis as secondary db for WCASG Dashboard queue integration (MongoDB support seems spotty, at best).
+```json
+{
+  "_id": {
+    "$oid": "5eb391d90cafdb66534da68e"
+  },
+  "name": "audit-12345",
+  "url": "example.com",
+  "standard": "WCAG2AA",
+  "headers": null
+}
+```
 
-> Client requests storage of this data so that we have some historical context to how a site does over time. Eventually, we will make historical data available to users in the backend dashboard so that they can maintain their accessibility via the application. 
+However, this task must be explicitly executed to perform any further actions.
 
-### What to do with the data
+### Execute a Task
 
-> The idea behind the scan is to alert the user (site owner) to their accessibility issues. Eventually the app will provide a gateway to solve those issues by adding custom fixes to the custom input feature of the app (ie: add alt tag to this image, fix is injected into the site via the app connection). 
+Sending a `POST` request to `/tasks/{id}/run` will execute the task in question:
 
-### Use Limits
+```
+curl --location --request POST 'https://audit.widget.wcasg.solarix.dev/tasks/5eb391d90cafdb66534da68e/run'
+```
 
-> A config should be created so that we can limit the number of times a scan may happen to a site within a 24hr period. 
+If this returns a `202` response code then the task is being executed.
 
-### Dashboard Features
+### Retrieve Task Results
 
-> The goal of this to start (MVP) is to not reinvent the wheel by forcing us to make a dozen dashboard graphs and stats. If an API service fits the bill and provides a report that can be rebranded or easily thrown into a design framework to display it's data - that seems like a good half measure to avoid a bunch of grunt work. 
+Upon completion a new `results` record is created in MongoDB.  Send a `GET` request to `/tasks/{id}/results?full=true` to retrieve this document:
 
-### MISC Things
+```
+curl --location --request GET 'https://audit.widget.wcasg.solarix.dev/tasks/5eb391d90cafdb66534da68e/results?full=true'
+```
 
-- Ignore sub-directories, scan should do an entire domain each time and stay within that domain
-- Scan a subdomain if requested, but do not deviate from that subdomain (treat it is an independent domain)
-- Plan on the input / scan submit being placed on LAMP stack. 
-- Create a new `WCASG Audit` Node.js API service, likely using the [pa11y WebService](https://github.com/pa11y/pa11y-webservice) app as a starter (and possibly adding [pa11y dashboard](https://github.com/pa11y/pa11y-dashboard) as well, though not required for our needs atm).
-- The `WCASG Audit` app has [API endpoints](https://github.com/pa11y/pa11y-webservice/wiki/Web-Service-Endpoints) for requesting audit tasks and retrieving results.
-- The webservice requires a MongoDB instance, so audit results will be stored there.
-- Add some new logic to the Laravel WCASG Dashboard app so it can send and receive requests to the `WCASG Audit` API app.
-  - The Dashboard db should track audit requests and (possibly) cache results obtained from the API.  It depends a bit on how verbose the results data is, but likely we'll just store the critical data to obtain the result on-demand (ID, domain, timestamp, etc) from the Audit API db.
-- To support more frequent/randomized audits for things like marketing, in addition to `User`-requested audits, we can also implement something like [Laravel Envoy](https://laravel.com/docs/master/envoy) and [Laravel Queues](https://laravel.com/docs/master/queues) to perform asynchronous batch audit requests to the Audit API service.
+```json
+{
+  "_id": {
+    "$oid": "5eb3569f0cafdb66534da68d"
+  },
+  "count": {
+    "total": {
+      "$numberInt": "62"
+    },
+    "error": {
+      "$numberInt": "3"
+    },
+    "warning": {
+      "$numberInt": "5"
+    },
+    "notice": {
+      "$numberInt": "54"
+    }
+  },
+  "results": [
+    {
+      "code": "WCAG2AA.Principle2.Guideline2_4.2_4_2.H25.2",
+      "type": "notice",
+      "typeCode": {
+        "$numberInt": "3"
+      },
+      "message": "Check that the title element describes the document.",
+      "context": "<title>Example.com</title>",
+      "selector": "html > head > title",
+      "runner": "htmlcs",
+      "runnerExtras": {}
+    },
+    {
+      "code": "WCAG2AA.Principle3.Guideline3_2.3_2_4.G197",
+      "type": "notice",
+      "typeCode": {
+        "$numberInt": "3"
+      },
+      "message": "Check that components that have the same functionality within this Web page are identified consistently in the set of Web pages to which it belongs.",
+      "context": null,
+      "selector": "",
+      "runner": "htmlcs",
+      "runnerExtras": {}
+    }
+    ...
+  ],
+  "task_id": "5eb391d90cafdb66534da68e",
+  "ignore": [],
+  "date": {
+    "$numberDouble": "1588811423413"
+  }
+}
+```
 
-## Implementation TODO
+## Infrastructure
 
-- [x] Setup MongoDB as both `development` and `testing` database.
-- [x] Setup Node server.
-- [x] Install [pa11y WebService](https://github.com/pa11y/pa11y-webservice)
-- [x] Install [pa11y dashboard](https://github.com/pa11y/pa11y-dashboard)
-- [x] Install headless Chrome to webserver
-- [x] Add ability to request a scan by domain name
-- [ ] Show results on a web page (unstyled or ugly is fine)
-  - [x] JSON output presently.
-- [ ] Allow API to be posted against from any sort of Hubspot or webpage html form.
-  - [ ] While this doesn't need to focus on security, privacy is a good metric to uphold here. Public URL results should probably expire unless connected to a user id in the dashboard, never expire in the DB so that eventually the admin can search historical results.
-  - [ ] Add throttling mechanism.
-  
-## Servers
+The Audit app and the WCASG Connector apps share environment-specific deployment servers, along with their associated MongoDB service.
 
-See: http://gitlab.solarixdigital.com/solarix/wcasg/audit/wikis/home
+### Testing Environment
+
+- SRN: `srn:ec2:wcasg:widget:audit-connector:testing::instance`
+- Endpoint: `audit.widget.wcasg.solarix.dev`
+
+### Production Environment
+
+- SRN: `srn:ec2:wcasg:widget:audit-connector:production::instance`
+- Endpoint (Solarix): `audit.widget.wcasg.solarix.host`
+- Endpoint (Client): `audit.wcasg.com`
+
+### Accessing MongoDB
+
+To directly connect:
+
+1. Open AWS console and adjust `srn:vpc:wcasg:widget:connector::sg/instance` security group.
+2. Add an `inbound rule` allowing `TCP 27017` from your private IP address.
+3. Now connect to server's mongodb port: 
+  - Testing: `mongodb://audit.widget.wcasg.solarix.dev:27017/pa11y-webservice-testing`
+  - Production: `mongodb://audit.widget.wcasg.solarix.host:27017/pa11y-webservice-production`
+
+To connect via SSH tunnel:
+
+1. Make sure you have a local copy of the `srn:ec2:solarix:core::pem/dev` SSH key.
+2. Establish a tunnelled connection:
+  - Testing: `ssh -L 4321:localhost:27017 ubuntu@audit.widget.wcasg.solarix.dev -f -N -i ~/.ssh/path/to/solarix__pem_dev.pem`
+  - Production: `ssh -L 4321:localhost:27017 ubuntu@audit.widget.wcasg.solarix.host -f -N -i ~/.ssh/path/to/solarix__pem_dev.pem`
+3. Localhost port `4321` can now access MongoDB: `mongo --port 4321`
+
+## Deployment
+
+1. Make changes and push to new feature branch or `testing` branch.
+2. Updates to `testing` branch execute GitLab CI/CD and will deploy changes to testing (`srn:ec2:wcasg:widget:audit-connector:testing::instance`).
+3. Verify testing environment.
+4. If stable, generate merge request into `production` environment.
+5. Upon merge, GitLab CI/CD will deploy to production (`srn:ec2:wcasg:widget:audit-connector:production::instance`).
