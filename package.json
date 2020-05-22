@@ -11,6 +11,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
+    "commit": "git-cz",
     "db:ssh-tunnel:testing": "ssh -L 4321:localhost:27017 ubuntu@audit.widget.wcasg.solarix.dev -f -N -i C:\\Users\\Gabe\\.ssh\\aws\\solarix__pem_dev.pem",
     "db:ssh-tunnel:production": "ssh -L 4321:localhost:27017 ubuntu@audit.widget.wcasg.solarix.host -f -N -i C:\\Users\\Gabe\\.ssh\\aws\\solarix__pem_dev.pem",
     "start": "node dist/index.js",
@@ -24,10 +25,18 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-typescript": "^7.8.3",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-typescript": "^3.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/gitlab": "^6.0.4",
+    "@semantic-release/npm": "^7.0.5",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "husky": "^4.2.5",
     "lodash": "^4.17.15",
     "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
@@ -37,5 +46,10 @@
   },
   "dependencies": {
     "pa11y-webservice-client-node": "^2.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
