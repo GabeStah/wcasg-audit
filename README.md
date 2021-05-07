@@ -1,3 +1,4 @@
+# WCASG Audit
 
 Audit is a backend service that performs accessibility audits for requested URLs.  Audit is essentially just a slightly-modified fork of the [pa11y WebService](https://github.com/pa11y/pa11y-webservice) app with a local MongoDB instance to store requests and results.
 
@@ -17,7 +18,7 @@ $ curl --location --request POST 'https://audit.widget.wcasg.solarix.dev/tasks' 
 }'
 ```
 
-This generates an new `task` document in MongoDB:
+This generates a new `task` document in MongoDB:
 
 ```json
 {

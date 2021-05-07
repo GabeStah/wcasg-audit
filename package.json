@@ -1,8 +1,8 @@
 {
   "name": "wcasg-audit",
-  "version": "0.0.1",
-  "author": "Gabe Wyatt <gabe@solarixdigital.com>",
-  "repository": "git@gitlab.solarixdigital.com:solarix/wcasg/audit.git",
+  "version": "1.0.0",
+  "author": "Gabe Wyatt <gabe@gabewyatt.com>",
+  "repository": "git@github.com:GabeStah/wcasg-audit.git",
   "description": "Node.js service to handle WCASG audit requests / responses.",
   "main": "dist/index.js",
   "files": [
